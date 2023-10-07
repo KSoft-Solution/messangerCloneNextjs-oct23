@@ -11,8 +11,8 @@ export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GithubProvider({
-      clientId: 'dc05566adcbd91c8e5ea',
-      clientSecret: '2041a011ebca5101ab3a4e72cb4130991aa670e8',
+      clientId: process.env.GITHUB_ID as string,
+      clientSecret: process.env.GITHUB_SECRET as string,
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,

@@ -1,12 +1,12 @@
 "use client";
+import toast from "react-hot-toast";
 import React, { FC, ReactElement, useCallback, useState } from "react";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
 import { BsGithub, BsGoogle } from "react-icons/bs";
+import { signIn } from "next-auth/react";
 import { Button, Input } from "@/components";
 import AuthSocialButton from "./AuthSocialButton";
-import axios, { AxiosError, AxiosResponse } from "axios";
-import toast from "react-hot-toast";
-import { signIn } from "next-auth/react";
 interface Props {}
 type Variant = "LOGIN" | "REGISTER";
 
@@ -54,10 +54,8 @@ const AuthForm: FC<Props> = (): ReactElement => {
 
   const socialAction = (action: string) => {
     setIsLoading(true);
-    console.log('action')
     signIn(action, { redirect: false })
       .then((callback) => {
-        console.log('ccc')
         if (callback?.error) {
           toast.error("Invalid Credentials");
         }
