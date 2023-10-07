@@ -1,18 +1,33 @@
 "use client";
 import toast from "react-hot-toast";
-import React, { FC, ReactElement, useCallback, useState } from "react";
+import React, {
+  FC,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
 import { BsGithub, BsGoogle } from "react-icons/bs";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { Button, Input } from "@/components";
 import AuthSocialButton from "./AuthSocialButton";
-interface Props {}
+
 type Variant = "LOGIN" | "REGISTER";
 
-const AuthForm: FC<Props> = (): ReactElement => {
+const AuthForm: FC<any> = (): ReactElement => {
+  const session = useSession();
+  const router = useRouter();
   const [variant, setValiant] = useState<Variant>("LOGIN");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (session?.status === "authenticated") {
+      router.push("/users");
+    }
+  }, [session?.status, router]);
 
   const {
     register,
@@ -49,6 +64,18 @@ const AuthForm: FC<Props> = (): ReactElement => {
         .finally(() => setIsLoading(false));
     }
     if (variant === "LOGIN") {
+      signIn("credentials", {
+        ...data,
+        redirect: false,
+      }).then((callback) => {
+        if (callback?.error) {
+          toast.error("Invalid Credentials");
+        }
+        if (callback?.ok && !callback?.error) {
+          toast.success(`${data?.name} logged in`);
+          router.push("/users");
+        }
+      });
     }
   };
 
@@ -61,6 +88,7 @@ const AuthForm: FC<Props> = (): ReactElement => {
         }
         if (callback?.ok && !callback?.error) {
           toast.success("login");
+          router.push("/users");
         }
       })
       .finally(() => {
