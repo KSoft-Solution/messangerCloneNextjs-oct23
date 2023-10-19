@@ -2,10 +2,14 @@ import { useRouter } from "@/hooks";
 import _ from "lodash";
 import React, { FC, ReactElement, useState } from "react";
 import DesktopItem from "../desktopItem";
+import { User } from "@prisma/client";
+import Avatar from "@/components/avatar";
 
-interface Props {}
+interface Props {
+    currentUser?:User | any
+}
 
-const DesktopSidebar: FC<Props> = ({}): ReactElement => {
+const DesktopSidebar: FC<Props> = ({currentUser}): ReactElement => {
   const routes = useRouter();
   const [open, setOpen] = useState<boolean>(false);
   return (
@@ -23,6 +27,11 @@ const DesktopSidebar: FC<Props> = ({}): ReactElement => {
             />
           ))}
         </ul>
+      </nav>
+      <nav className="mt-4 flex flex-col justify-between items-center">
+        <div onClick={()=>setOpen(true)} className="cursor-pointer hover:opacity-75 transtion">
+            <Avatar/>
+        </div>
       </nav>
     </div>
   );
